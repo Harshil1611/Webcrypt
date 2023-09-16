@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}
+HOME |
+{% endblock title %}
+
+
+{% block body %}
+
+{% comment %} <h1>Simple Form</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="input_field">Enter Something:</label>
+        <input type="text" id="input_field" name="input_field" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form> {% endcomment %}
+
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Encryption</h1>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    
+                    {% comment %} dropdown menu {% endcomment %}
+                    
+                    <div class="form-group">
+                        <label for="algo_select">Select Algorithms:</label>
+                        <div class=" text-secondary">
+                            <select class="form-control" id="enc_selectchoice"
+                              name="enc_selectchoice"
+                              {% comment %} onchange="enc_hide()" {% endcomment %}>
+                              <option value="Caeser cipher algo">Caeser cipher algo</option>
+                              <option value="Mono alphabetic">Mono alphabetic</option>
+                              <option value="Hill cipher">Hill cipher</option>
+                              <option value="Play fair cipher">Play fair cipher</option>
+                              <option value="Double columnar">Double columnar
+                            </option>
+                              <option value="Polyalphabetic">Polyalphabetic</option>
+                              <option value="Diffie-hellman key exchange">Diffie-hellman key exchange</option>
+                            </select>
+                          </div>
+                        <label for="input_field">Enter Plain Text:</label>
+                        <input type="text" class="form-control" id="input_field" name="input_field" required>
+                    </div>
+                                  <!-- Radio button for custom key -->
+              <div class="form-group">
+                <label>Do you want to provide a custom key?</label><br>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                    name="customKeyOption" id="customKeyOptionYes" value="yes">
+                  <label class="form-check-label" for="customKeyOptionYes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                    name="customKeyOption" id="customKeyOptionNo" value="no">
+                  <label class="form-check-label" for="customKeyOptionNo">No</label>
+                </div>
+              </div>
+              <!-- Input for custom key (hidden by default) -->
+              <div class="form-group" id="customKeyInput" style="display: none;">
+                <label for="customKey">Enter Custom Key</label>
+                <input type="text" class="form-control" id="customKey"name="customKey" placeholder="Enter custom key">
+                
+              </div>                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                </form>
+                
+            </div>
+
+            {% comment %} output box {% endcomment %}
+            
+            </div>
+            {% if output %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        Output
+                    </div>
+                    <div class="card-body">
+                        <p>{{ output }}</p>
+                        <a href="{% url 'download' %}?output={{ output }}">Download Text File</a>                    </div>
+                </div>
+                {% endif %}
+            </div>  
+       </div>
+
+
+
+
+{% comment %} JS {% endcomment %}
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const customKeyOptionYes = document.getElementById("customKeyOptionYes");
+        const customKeyOptionNo = document.getElementById("customKeyOptionNo");
+        const customKeyInput = document.getElementById("customKeyInput");
+  
+        function toggleCustomKeyInput() {
+            if (customKeyOptionYes.checked) {
+                customKeyInput.style.display = "block";
+            } else {
+                customKeyInput.style.display = "none";
+            }
+        }
+  
+        customKeyOptionYes.addEventListener("change", toggleCustomKeyInput);
+        customKeyOptionNo.addEventListener("change", toggleCustomKeyInput);
+  
+        // Initialize on page load
+        toggleCustomKeyInput();
+    });
+
+  </script>
+  
+  {% comment %} JS END {% endcomment %}
+  
+{% endblock body %}
