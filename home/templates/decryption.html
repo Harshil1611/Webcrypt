@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+
+{% block title %}
+Decryption
+{% endblock title %}
+
+
+
 {% block body %}
 
 <div class="container mt-5">
@@ -56,8 +63,7 @@
                 
                 
                 
-                <button type="submit" class="btn btn-primary">Submit</button>
-
+          <button type="submit" class="btn btn-primary" style='background: linear-gradient(to right, #FF4B2B, #FF416C); border: none;' onmouseover="this.style.color='black';"onmouseout="this.style.color='white';">Submit</button>
             </form>
             
         </div>
@@ -66,14 +72,16 @@
         
         </div>
         {% if output %}
-            <div class="card mt-4">
+            <div class="card mt-4" style="font-size: 20px">
                 <div class="card-header">
                     Output
                 </div>
                 <div class="card-body">
-                    <p>{{ output }}</p>
-                    <a href="{% url 'download' %}?output={{ output }}">Download Text File</a>
-                </div>
+                  <p style="border-bottom: 1px solid #000000;">{{ output }}</p>
+                    <a href="{% url 'download' %}?output={{ output }}">
+                      <span style="background: linear-gradient(to right, #FF4B2B, #FF416C); -webkit-background-clip: text; background-clip: text; color: transparent;">Download Text File</span>
+                  </a>
+                                  </div>
             </div>
             {% endif %}
         </div>  

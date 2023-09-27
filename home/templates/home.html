@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-HOME |
+Encryption
 {% endblock title %}
 
 
@@ -34,12 +34,12 @@ HOME |
                               {% comment %} onchange="enc_hide()" {% endcomment %}>
                               <option value="Caeser cipher algo">Caeser cipher algo</option>
                               <option value="Mono alphabetic">Mono alphabetic</option>
-                              <option value="Hill cipher">Hill cipher</option>
+                              {% comment %} <option value="Hill cipher">Hill cipher</option>
                               <option value="Play fair cipher">Play fair cipher</option>
                               <option value="Double columnar">Double columnar
                             </option>
                               <option value="Polyalphabetic">Polyalphabetic</option>
-                              <option value="Diffie-hellman key exchange">Diffie-hellman key exchange</option>
+                              <option value="Diffie-hellman key exchange">Diffie-hellman key exchange</option> {% endcomment %}
                             </select>
                           </div>
                         <label for="input_field">Enter Plain Text:</label>
@@ -65,13 +65,7 @@ HOME |
                 <input type="text" class="form-control" id="customKey"name="customKey" placeholder="Enter custom key">
                 
               </div>                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" style='background: linear-gradient(to right, #FF4B2B, #FF416C); border: none;' onmouseover="this.style.color='black';"onmouseout="this.style.color='white';">Submit</button>
 
                 </form>
                 
@@ -81,13 +75,16 @@ HOME |
             
             </div>
             {% if output %}
-                <div class="card mt-4">
-                    <div class="card-header">
-                        Output
+                <div class="card mt-4" style="font-size: 20px">
+                <div class="card-header">
+                    Output
+                </div>
+                <div class="card-body">
+                  <p style="border-bottom: 1px solid #000000;">{{ output }}</p>
+                    <a href="{% url 'download' %}?output={{ output }}">
+                      <span style="background: linear-gradient(to right, #FF4B2B, #FF416C); -webkit-background-clip: text; background-clip: text; color: transparent;">Download Text File</span>
+                  </a>
                     </div>
-                    <div class="card-body">
-                        <p>{{ output }}</p>
-                        <a href="{% url 'download' %}?output={{ output }}">Download Text File</a>                    </div>
                 </div>
                 {% endif %}
             </div>  

@@ -104,6 +104,16 @@ def download(request):
 
     return response
 
+
+# def login(request):
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         email =request.POST.get('email')
+#         password =request.POST.get('password')
+
+    
+#     return render(request,'login.html')
+
 def decryption(request):
     if request.method == 'POST':
         input_value = request.POST.get('input_field')
