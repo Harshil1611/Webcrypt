@@ -1,0 +1,53 @@
+{% extends 'home/base.html' %}
+{% block body %}
+  <h2>Your Favorites</h2>
+  {% if user_favorites %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Algorithm</th>
+          <th>Text</th>
+          <th>Custom Key</th>
+          <th>Saved By</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in user_favorites %}
+          <tr>
+            <td>{{ item.algorithm }}</td>
+            <td>{{ item.text }}</td>
+            <td>{% if item.custom_key %}Yes{% else %}No{% endif %}</td>
+            <td>{{ item.user.username }}</td>
+            <td>
+              <form method="post" action="{% url 'delete_favorite' item.id %}" onsubmit="return deleteFavorite({{ item.id }});">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You haven't saved any favorites yet.</p>
+  {% endif %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script type="text/javascript">
+  function deleteFavorite(itemId) {
+      if (confirm("Are you sure you want to delete this favorite item?")) {
+          // Send an AJAX request to delete the favorite item
+          $.post('/delete_favorite/' + itemId + '/');
+          location.reload(); // Reload the page after deletion
+      }
+      return false; // Prevent the form from submitting immediately
+  }
+</script>
+
+
+
+{% endblock body %}
