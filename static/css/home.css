@@ -1,0 +1,17 @@
+.btn-outline-primary:hover {
+    background-color: #e74c3c !important;
+}
+
+.btn-primary:hover {
+    background-color: #e74c3c !important;
+}
+
+.modal-header {
+    border-radius: 20px;
+    border-width: 2px;
+    border-color: rgb(176, 80, 80);
+}
+
+.card {
+    border-radius: 30px;
+}

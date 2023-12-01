@@ -23,6 +23,25 @@ from django.views.decorators.cache import cache_control
 # from django.template.loader import render_to_string
 # import os
 
+# stagno imports
+
+import mimetypes
+import os
+
+import cv2
+from django.conf import settings as django_settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.views.defaults import page_not_found, server_error
+
+from FSSApp.LSBSteg import LSBSteg
+
+
+
+
+
+
 # Create your views here.
 def home(request):
     if request.method == 'POST':
@@ -167,6 +186,49 @@ def home(request):
             print("\nCipher text after applying rail fence:")
                 
             output_value=c
+
+        elif algo_valu == 'Vigenère cipher':
+
+            if radio_value=='yes':
+                key=key_value
+            else:
+                key=123
+            decryption_key = key
+            def generate_repeated_key(plaintext, key):
+                key = list(key)
+                if len(plaintext) == len(key):
+                    return key
+                else:
+                    for i in range(len(plaintext) - len(key)):
+                        key.append(key[i % len(key)])
+                    return key
+
+            def encryption_algo(plaintext, key):
+                ciphertext = []
+                for i in range(len(plaintext)):
+                    if plaintext[i].isalpha():
+                        encrypted_char = (ord(plaintext[i].upper()) + ord(key[i].upper())) % 26 + ord('A')
+                        ciphertext.append(chr(encrypted_char))
+                    else:
+                        ciphertext.append(plaintext[i])
+                return "".join(ciphertext)
+
+            
+
+            print("20012021049_harshil Raval")
+            plain_input = input_value
+
+            key = generate_repeated_key(plain_input, key)
+            enc_text = encryption_algo(plain_input, key)
+
+            decryption_key = generate_repeated_key(enc_text, decryption_key)
+            print("Encrypted text ->", enc_text)
+            output_value=enc_text
+
+            print("Enter key to decrypt")
+
+            print("------------------------------------------------------------------")
+
                 
             
             
@@ -339,6 +401,49 @@ def decryption(request):
             print("Text after decryption:")
             print("".join(d))
             output_value=d
+        
+        elif algo_valu == 'Vigenère cipher':
+            # plain_input = input("Enter text to Encryption: ") 
+            # k = input("Enter Private Key`  : ")   
+            print("20012021049_harshil Raval")
+            def generateKey(string, key):  
+                key = list(key)     
+                if len(string) == len(key):          
+                    return(key)     
+                else:  
+                    for i in range(len(string) -len(key)):  
+                        key.append(key[i % len(key)])     
+                return("" . join(key))  
+            
+            # k= generateKey(plain_input,k)  
+            
+            
+            def decryption_algo(cipher, key):
+                plaintext = [] 
+                for i in range(len(cipher)): 
+                    if cipher[i].isalpha():
+                        plain_input = (ord(cipher[i].upper()) - ord(key[i].upper()) + 26)%26 
+                        plain_input += ord('a') 
+                        plaintext.append(chr(plain_input))
+                    else:
+                        plaintext.append(cipher[i])
+                return("" . join(plaintext))
+            
+            enc_text = input_value
+            print("Encrypted text -> ", enc_text)
+            
+            print("Enter key to decrypt") 
+            
+            print("------------------------------------------------------------------")
+            
+            key=  key_value
+            key = generateKey(enc_text,key)
+            if key == k:
+                dec_text= decryption_algo(enc_text,key)
+                print("Decrypted text: ", dec_text) 
+                output_value=dec_text
+            else:
+                print("Incorrect key...Try again")
 
 
     # Encryption logic end
@@ -373,3 +478,123 @@ def save_to_favorites(request):
 
     return redirect('home')
 
+
+
+
+def stagno(request):
+    # encoding part
+    if request.method == 'POST' and 'enc_apply' in request.POST:
+        content = request.FILES['enc_c_file'].read()
+        file = open(os.path.join(django_settings.STATICFILES_DIRS[4], f'encryptsourceimage.png'), 'wb+')
+        file.write(content)
+        # text encoding
+        if request.POST['enc_selectchoice'] == 'enc_text':
+            steg = LSBSteg(cv2.imread(file.name))
+            processed_text = request.POST['enc_steg_text']
+            processed_text = processed_text.replace(' ', '_')
+            img_encoded = steg.encode_text(processed_text)
+            # path = str('../media/' + {user.username} + '_steg.png')
+            BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            filename = 'steg_image.png'
+            filepath = BASEDIR + '/media/' + filename
+            cv2.imwrite(filepath, img_encoded)
+            path = open(filepath, 'rb')
+            mime_type, _ = mimetypes.guess_type(filepath)
+            # Set the return value of the HttpResponse
+            response = HttpResponse(path, content_type=mime_type)
+            # Set the HTTP header for sending to browser
+            response['Content-Disposition'] = "attachment; filename=%s" % filename
+            # Return the response value
+            return response
+
+        # image encoding
+        if request.POST['enc_selectchoice'] == 'enc_image':
+            content = request.FILES['enc_c_img'].read()
+            imgfile = open(os.path.join(django_settings.STATICFILES_DIRS[4], f'encryptstegimage.png'), 'wb+')
+            imgfile.write(content)
+            steg = LSBSteg(cv2.imread(file.name))
+            # instead of encode image using encode binary
+            data = open(imgfile.name, "rb").read()
+            new_im = steg.encode_binary(data)
+            # new_im = steg.encode_image(cv2.imread(imgfile.name))
+            BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            filename = 'steg_image.png'
+            filepath = BASEDIR + '/media/' + filename
+            cv2.imwrite(filepath, new_im)
+            path = open(filepath, 'rb')
+            mime_type, _ = mimetypes.guess_type(filepath)
+            response = HttpResponse(path, content_type=mime_type)
+            response['Content-Disposition'] = "attachment; filename=%s" % filename
+            return response
+        # binary encoding
+        if request.POST['enc_selectchoice'] == 'enc_binary':
+            content = request.FILES['enc_c_bfile'].read()
+            binfile = open(os.path.join(django_settings.STATICFILES_DIRS[4], f'encryptstegbinary.bin'), 'wb+')
+            binfile.write(content)
+            steg = LSBSteg(cv2.imread(file.name))
+            # instead of encode image using encode binary
+            data = open(binfile.name, "rb").read()
+            new_bin = steg.encode_binary(data)
+            # new_im = steg.encode_image(cv2.imread(imgfile.name))
+            BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            filename = 'steg_image.png'
+            filepath = BASEDIR + '/media/' + filename
+            cv2.imwrite(filepath, new_bin)
+            path = open(filepath, 'rb')
+            mime_type, _ = mimetypes.guess_type(filepath)
+            response = HttpResponse(path, content_type=mime_type)
+            response['Content-Disposition'] = "attachment; filename=%s" % filename
+            return response
+        return render(request, 'home/stagno.html')
+
+    if request.method == 'POST' and 'dec_retrieve' in request.POST:
+        print('dec')
+        content = request.FILES['dec_c_file'].read()
+        file = open(os.path.join(django_settings.STATICFILES_DIRS[4], f'decryptsourceimage.png'), 'wb+')
+        file.write(content)
+        file.close()
+        BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        filename = f'decryptsourceimage.png'
+        filepath = BASEDIR + '\\media\\' + filename
+        print(filepath)
+        # text decoding
+        if request.POST['dec_selectchoice'] == 'dec_text':
+            im = cv2.imread(filepath)
+            steg = LSBSteg(im)
+            dec_text = steg.decode_text()
+            print(dec_text)
+            dec_text = dec_text.replace('_', ' ')
+            print(dec_text)
+            return render(request, 'home/stagno.html', context={'dec_text': dec_text})
+
+        # image decoding
+        if request.POST['dec_selectchoice'] == 'dec_image':
+            steg = LSBSteg(cv2.imread(filepath))
+            binary = steg.decode_binary()
+            filename = 'newimage.png'
+            filepath = BASEDIR + '/media/' + filename
+            with open(filepath, "wb+") as f:
+                f.write(binary)
+            path = open(filepath, 'rb')
+            mime_type, _ = mimetypes.guess_type(filepath)
+            response = HttpResponse(path, content_type=mime_type)
+            response['Content-Disposition'] = "attachment; filename=%s" % filename
+            return response
+
+        # binary decoding
+        if request.POST['dec_selectchoice'] == 'dec_binary':
+            steg = LSBSteg(cv2.imread(filepath))
+            binary = steg.decode_binary()
+            filename = 'newbinary.bin'
+            filepath = BASEDIR + '/media/' + filename
+            with open(filepath, "wb+") as f:
+                f.write(binary)
+            path = open(filepath, 'rb')
+            mime_type, _ = mimetypes.guess_type(filepath)
+            response = HttpResponse(path, content_type=mime_type)
+            response['Content-Disposition'] = "attachment; filename=%s" % filename
+            return response
+
+        return render(request, 'home/stagno.html')
+    return render(request, 'home/stagno.html')
+    

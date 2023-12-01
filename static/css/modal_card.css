@@ -1,0 +1,9 @@
+.modal-header {
+    border-radius: 20px;
+    border-width: 2px;
+    border-color: black;
+}
+
+.card {
+    border-radius: 30px;
+}

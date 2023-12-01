@@ -35,8 +35,8 @@ Encryption
               <option value="Mono alphabetic">Mono alphabetic</option>
               <option value="Hill cipher">Hill cipher</option>
               <option value="Railfence cipher">Railfence cipher</option>
-              {% comment %}<option value="Double columnar">Double columnar</option>
-              <option value="Polyalphabetic">Polyalphabetic</option>
+              <option value="Vigenère cipher">Vigenère cipher</option>
+              {% comment %}<option value="Polyalphabetic">Polyalphabetic</option>
               <option value="Diffie-hellman key exchange">Diffie-hellman key exchange</option> {% endcomment %}
             </select>
           </div>
@@ -134,6 +134,58 @@ Encryption
   });
 
 </script>
+
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    const customKeyOptionYes = document.getElementById("customKeyOptionYes");
+    const customKeyInput = document.getElementById("customKeyInput");
+    const encSelectChoice = document.getElementById("enc_selectchoice");
+
+    function toggleCustomKeyInput() {
+      if (customKeyOptionYes.checked) {
+        customKeyInput.style.display = "block";
+      } else {
+        customKeyInput.style.display = "none";
+      }
+    }
+
+    function updateCustomKeyPlaceholder() {
+      const selectedAlgorithm = encSelectChoice.value;
+      let placeholder = "Enter Custom Key";
+
+      // Customize placeholder based on the selected algorithm
+      switch (selectedAlgorithm) {
+        case "Caeser cipher algo":
+          placeholder = "Enter Caeser Key";
+          break;
+        case "Mono alphabetic":
+          placeholder = "Enter Mono Alphabetic Key";
+          break;
+        case "Hill cipher":
+          placeholder = "Enter Hill Key";
+          break;
+        case "Railfence cipher":
+          placeholder = "Enter Railfence Key";
+          break;
+        // Add more cases for other algorithms if needed
+      }
+
+      document.getElementById("customKey").placeholder = placeholder;
+    }
+
+    customKeyOptionYes.addEventListener("change", function () {
+      toggleCustomKeyInput();
+      updateCustomKeyPlaceholder();
+    });
+
+    // Trigger the function on page load
+    toggleCustomKeyInput();
+    updateCustomKeyPlaceholder();
+  });
+
+</script>
+
 
 {% comment %} JS END {% endcomment %}
 
