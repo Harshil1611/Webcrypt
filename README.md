@@ -13,3 +13,7 @@ $ python manage.py runserver
 Other then this you can find the other packeges used in this project internally.
 We have used Django v4.0.0 at the time of developement.
 
+IF there are still some errors then there might be some modules not installed yet by you.
+Kindly INSTALL ALL.
+
+if NOT able to find then, COPY PASTE THOSE ERROR TO KNOW WHICH MODULES ARE PENDIIG YET TO INSTALL.
